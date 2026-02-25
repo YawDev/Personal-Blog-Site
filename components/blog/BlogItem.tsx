@@ -13,7 +13,10 @@ const BlogItem = () => {
           <p className="text-slate-600 leading-relaxed">
             {"Article preview here."}
           </p>
-          <a className="text-blue-600 hover:text-blue-800 mt-4 inline-block font-semibold transition-colors cursor-pointer">
+          <a
+            href="blogs/1"
+            className="text-blue-600 hover:text-blue-800 mt-4 inline-block font-semibold transition-colors cursor-pointer"
+          >
             Read More →
           </a>
         </div>
