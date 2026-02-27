@@ -8,10 +8,46 @@ export interface IFormState {
   title: FormField;
   preview: FormField;
   content: FormField;
-  validForSubmit: false;
+  validForSubmit: boolean;
 }
 
 export type FormField = {
   value: string;
   error: string;
+  touched: boolean;
+};
+
+export const FormValidationResult = (field: string, value: string): string => {
+  return getFieldError(field, value);
+};
+
+const getFieldError = (field: string, value: string): string => {
+  const alphaumericRegex = /^[a-zA-Z0-9]+$/;
+
+  switch (field) {
+    case "title":
+      if (!value) return "Title is required";
+      if (value.length < 5) return "Title must be at least 5 characters";
+      if (!alphaumericRegex.test(value))
+        return "Only letters and numbers allowed";
+
+      return "";
+
+    case "preview":
+      if (value && value.length > 100)
+        return "Preview must be under 100 characters";
+      if (value && !alphaumericRegex.test(value))
+        return "Only letters and numbers allowed";
+      return "";
+
+    case "content":
+      if (!value) return "Content is required";
+      if (value.length < 20) return "Content is too short";
+      if (!alphaumericRegex.test(value))
+        return "Only letters and numbers allowed";
+      return "";
+
+    default:
+      return "";
+  }
 };

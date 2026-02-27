@@ -1,14 +1,13 @@
-"use client";
 import BlogList from "@/components/blog/Blogs";
-import { useState, useEffect } from "react";
 import { Blog } from "../utils/types";
 import { blogsData } from "../utils/InMemory";
-export default function BlogsPage() {
-  const [blogs, setBlogs] = useState<Blog[]>(blogsData);
+export default async function BlogsPage() {
+  //const [blogs, setBlogs] = useState<Blog[]>(blogsData);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
 
   return (
     <>
-      <BlogList blogs={blogs} />
+      <BlogList blogs={blogsData} />
     </>
   );
 }
