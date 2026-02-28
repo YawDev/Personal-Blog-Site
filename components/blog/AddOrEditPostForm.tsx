@@ -1,9 +1,12 @@
 "use client";
 
-import { FormMode, IFormState } from "@/app/utils/FormHelpers";
-import { SaveDraftButton } from "./SaveDraftButton";
-import { useState } from "react";
+import { FormMode } from "@/app/utils/FormHelpers";
+import useFormValidation from "@/hooks/useFormValidation";
+//import { SaveDraftButton } from "./SaveDraftButton";
 import { Blog } from "@/app/utils/types";
+import ErrorMessage from "@/components/shared/ErrorMessage";
+import WritingTips from "./WritingTips";
+import BackToArticles from "./BackToArticles";
 export function AddOrEditPostForm({
   mode,
   blogData,
@@ -11,41 +14,33 @@ export function AddOrEditPostForm({
   mode: FormMode;
   blogData: Blog | null;
 }) {
-  const [formInputState, setFormInputState] = useState<IFormState>({
-    title: { value: "", error: "" },
-    preview: { value: "", error: "" },
-    content: { value: "", error: "" },
-    validForSubmit: false,
+  const { formState, handleInputChange, handleBlur } = useFormValidation({
+    title: blogData?.title || "",
+    preview: blogData?.preview || "",
+    content: blogData?.content || "",
   });
+
+  const setPageTitle = () => {
+    switch (mode) {
+      case FormMode.Create:
+        return "Create New Article";
+      case FormMode.EditDraft:
+        return "Edit Saved Draft";
+      case FormMode.EditPublished:
+        return "Edit Published Article";
+      default:
+        return "Article Form";
+    }
+  };
 
   return (
     <section className="bg-gradient-to-br from-teal-50 to-white min-h-screen py-16 px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="mb-4">
-            <a
-              href="/blogs"
-              className="inline-flex items-center text-teal-600 hover:text-teal-800 font-medium transition-colors duration-200"
-            >
-              <svg
-                className="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-              Back to Articles
-            </a>
-          </div>
+          <BackToArticles />
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Create New Article
+            {setPageTitle()}
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Share your insights and expertise with the community
@@ -74,11 +69,20 @@ export function AddOrEditPostForm({
                 id="title"
                 name="title"
                 placeholder="Enter an engaging title for your article..."
-                className="w-full px-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:ring-0 outline-none transition-colors duration-200 hover:border-gray-300"
+                className={`w-full px-4 py-4 text-lg border-2 rounded-xl focus:ring-0 outline-none transition-colors duration-200 ${
+                  formState.title.error
+                    ? "border-red-300 focus:border-red-500 hover:border-red-400"
+                    : "border-gray-200 focus:border-teal-500 hover:border-gray-300"
+                }`}
                 required
+                value={formState.title.value}
+                onChange={(e) => handleInputChange("title", e.target.value)}
+                onBlur={() => handleBlur("title")}
               />
             </div>
-
+            {formState.title.error && (
+              <ErrorMessage message={formState.title.error} />
+            )}
             {/* Preview Field */}
             <div>
               <label
@@ -95,8 +99,18 @@ export function AddOrEditPostForm({
                 name="preview"
                 rows={4}
                 placeholder="Write a compelling summary that will entice readers to click and read more..."
-                className="w-full px-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:ring-0 outline-none transition-colors duration-200 hover:border-gray-300 resize-none"
+                className={`w-full px-4 py-4 text-lg border-2 rounded-xl focus:ring-0 outline-none transition-colors duration-200 resize-none ${
+                  formState.preview.error
+                    ? "border-red-300 focus:border-red-500 hover:border-red-400"
+                    : "border-gray-200 focus:border-teal-500 hover:border-gray-300"
+                }`}
+                value={formState.preview.value}
+                onChange={(e) => handleInputChange("preview", e.target.value)}
+                onBlur={() => handleBlur("preview")}
               ></textarea>
+              {formState.preview.error && (
+                <ErrorMessage message={formState.preview.error} />
+              )}
             </div>
 
             {/* Content Field */}
@@ -112,12 +126,22 @@ export function AddOrEditPostForm({
                 name="content"
                 rows={16}
                 placeholder="Start writing your article here. Share your insights, experiences, and expertise..."
-                className="w-full px-4 py-4 text-lg border-2 border-gray-200 rounded-xl focus:border-teal-500 focus:ring-0 outline-none transition-colors duration-200 hover:border-gray-300 resize-y"
+                className={`w-full px-4 py-4 text-lg border-2 rounded-xl focus:ring-0 outline-none transition-colors duration-200 resize-y ${
+                  formState.content.error
+                    ? "border-red-300 focus:border-red-500 hover:border-red-400"
+                    : "border-gray-200 focus:border-teal-500 hover:border-gray-300"
+                }`}
                 required
+                value={formState.content.value}
+                onChange={(e) => handleInputChange("content", e.target.value)}
+                onBlur={() => handleBlur("content")}
               ></textarea>
               <p className="text-sm text-gray-500 mt-2">
                 Tip: Use clear paragraphs and headings to improve readability
               </p>
+              {formState.content.error && (
+                <ErrorMessage message={formState.content.error} />
+              )}
             </div>
 
             {/* Action Buttons */}
@@ -125,7 +149,12 @@ export function AddOrEditPostForm({
               {/* Once save draft functionality is implemented, button will be triggered when form input is valid */}
               <button
                 type="submit"
-                className="px-8 py-4 text-lg font-semibold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-colors duration-200 shadow-lg hover:shadow-xl"
+                className={`px-8 py-4 text-lg font-semibold rounded-xl transition-all duration-200 ${
+                  !formState.validForSubmit
+                    ? "text-gray-400 bg-gray-300 cursor-not-allowed opacity-60 shadow-none"
+                    : "text-white bg-teal-600 hover:bg-teal-700 shadow-lg hover:shadow-xl cursor-pointer"
+                }`}
+                disabled={!formState.validForSubmit}
               >
                 Publish Article
               </button>
@@ -133,17 +162,7 @@ export function AddOrEditPostForm({
           </form>
 
           {/* Writing Tips */}
-          <div className="mt-12 p-6 bg-teal-50 rounded-xl border-l-4 border-teal-600">
-            <h3 className="text-lg font-semibold text-teal-900 mb-2">
-              Writing Tips
-            </h3>
-            <ul className="text-teal-800 space-y-1 text-sm">
-              <li>• Start with a compelling hook to grab readers' attention</li>
-              <li>• Use subheadings to organize your content clearly</li>
-              <li>• Include practical examples and actionable insights</li>
-              <li>• End with a strong conclusion or call-to-action</li>
-            </ul>
-          </div>
+          <WritingTips />
         </div>
       </div>
     </section>
