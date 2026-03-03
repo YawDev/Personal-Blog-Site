@@ -1,11 +1,11 @@
 "use client";
 import { FormMode } from "@/app/utils/FormHelpers";
-import { AddOrEditPostForm } from "@/components/blog/saveBlogPost/AddOrEditPostForm";
+import { SavePostForm } from "@/components/blog/save/SavePostForm";
 
 const CreateBlogPage = () => {
   return (
     <>
-      <AddOrEditPostForm mode={FormMode.Create} blogData={null} />
+      <SavePostForm mode={FormMode.Create} blogData={null} />
     </>
   );
 };

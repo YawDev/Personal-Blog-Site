@@ -5,6 +5,7 @@ import { FormMode, IFormState } from "@/app/utils/FormHelpers";
 import PublishArticleButton from "./PublishArticleButton";
 import { useRouter } from "next/navigation";
 import { savePostToLocalStorage } from "@/app/utils/InMemory";
+import { SaveDraftButton } from "./SaveDraftButton";
 
 const SaveFormCard = ({
   mode,
@@ -108,7 +109,10 @@ const SaveFormCard = ({
           }}
         />
         {/* Action Buttons */}
-        <PublishArticleButton formState={formState} mode={mode} />
+        <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6">
+          <SaveDraftButton formState={formState} mode={mode} />
+          <PublishArticleButton formState={formState} mode={mode} />
+        </div>
       </form>
 
       {/* Writing Tips */}

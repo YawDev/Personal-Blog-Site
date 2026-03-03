@@ -8,7 +8,7 @@ const PublishArticleButton = ({
   mode: FormMode;
 }) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-4 justify-end pt-6">
+    <>
       {/* Once save draft functionality is implemented, button will be triggered when form input is valid */}
       <button
         type="submit"
@@ -21,7 +21,7 @@ const PublishArticleButton = ({
       >
         {mode === FormMode.EditPublished ? "Update Article" : "Publish Article"}
       </button>
-    </div>
+    </>
   );
 };
 
