@@ -2,15 +2,13 @@
 
 import { FormMode } from "@/app/utils/FormHelpers";
 import useFormValidation from "@/hooks/useFormValidation";
-//import { SaveDraftButton } from "./SaveDraftButton";
 import { Blog } from "@/app/utils/types";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getFromLocalStorage } from "@/app/utils/LocalStorage";
 import setPageTitle from "@/formHelpers/formUtils";
 import BackToArticles from "../BackToArticles";
 import SaveFormCard from "./SaveFormCard";
-export function AddOrEditPostForm({
+export function SavePostForm({
   mode,
   blogData,
 }: {
@@ -42,7 +40,19 @@ export function AddOrEditPostForm({
         setCurrentBlogData(blogToEdit);
         loadExistingData(blogToEdit);
       }
+    } else if (mode === FormMode.EditDraft) {
+      var localStorage: any = getFromLocalStorage("drafts");
+      const draftToEdit = localStorage
+        ? JSON.parse(localStorage).find(
+            (d: { id: string }) => d.id === blogData?.id,
+          )
+        : null;
+      if (draftToEdit) {
+        setCurrentBlogData(draftToEdit);
+        loadExistingData(draftToEdit);
+      }
     }
+
     setIsLoading(false);
   }, [mode, blogData?.id]);
 

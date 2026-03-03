@@ -23,6 +23,18 @@ export const savePostToLocalStorage = (
       router.push(`/blogs/${newBlog.id}`);
       break;
     case FormMode.EditDraft:
+      //Delete draft before publishing post
+      deleteDraftFromLocalStorage(idParam as string);
+
+      let newBlogId = uuid();
+      saveNewPostToLocalStorage({
+        id: newBlogId,
+        title: formState.title.value,
+        preview: formState.preview.value,
+        content: formState.content.value,
+        datePosted: new Date().toISOString(),
+      });
+      router.push(`/blogs/${newBlogId}`);
       break;
     case FormMode.EditPublished:
       idParam &&
@@ -96,3 +108,42 @@ export const editPostInLocalStorage = ({
     console.error("Blog not found for updating draft:", idParam);
   }
 };
+
+const SaveDraftToLocalStorage = (newDraft: any) => {
+  const storedDrafts = getFromLocalStorage("drafts");
+  let draftsData = [];
+
+  try {
+    if (storedDrafts) {
+      const parsed = JSON.parse(storedDrafts);
+      draftsData = Array.isArray(parsed) ? parsed : [];
+    }
+  } catch (error) {
+    console.warn("Invalid drafts data in localStorage, starting fresh:", error);
+    draftsData = [];
+  }
+
+  draftsData.push(newDraft);
+  saveToLocalStorage("drafts", JSON.stringify(draftsData));
+};
+
+export default SaveDraftToLocalStorage;
+
+export function deleteDraftFromLocalStorage(idParam: string) {
+  const storedDrafts = getFromLocalStorage("drafts");
+  let foundDrafts: any[] = [];
+
+  try {
+    if (storedDrafts) {
+      const parsed = JSON.parse(storedDrafts);
+      foundDrafts = Array.isArray(parsed) ? parsed : [];
+    }
+  } catch (error) {
+    console.warn("Invalid draft in localStorage, cannot delete:", error);
+    return;
+  }
+
+  foundDrafts = foundDrafts.filter((d: any) => d.id !== idParam);
+  saveToLocalStorage("drafts", JSON.stringify(foundDrafts));
+  console.log("draft with id: " + { idParam } + " deleted");
+}
