@@ -5,3 +5,9 @@ export type Blog = {
   datePosted: string;
   preview: string;
 };
+
+export type IPagination = {
+  itemsPerPage: number;
+  totalItems: number;
+  currentPage: number;
+};

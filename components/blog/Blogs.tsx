@@ -1,16 +1,20 @@
 "use client";
 
-import { Blog } from "@/app/utils/types";
+import { Blog, IPagination } from "@/utils/types";
 import BlogItem from "./BlogItem";
 import ShowMoreButton from "./ShowMore";
-import { FormMode } from "@/app/utils/FormHelpers";
 import { useEffect, useState } from "react";
-import { getFromLocalStorage } from "@/app/utils/LocalStorage";
+import { getFromLocalStorage } from "@/utils/LocalStorage";
+import { GetCurrentItems } from "@/utils/Filtering";
+import Pagination from "./Pagination";
+import {
+  maxValueToDisplay,
+  minValueToDisplay,
+} from "@/utils/VisiblePostSetttings";
 const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
-  const [mode, setMode] = useState<FormMode>(FormMode.Create);
-
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [visiblePostsCount, setVisiblePostsCount] = useState(minValueToDisplay);
 
   useEffect(() => {
     // Remove localStorage once API is integrated and replace with fetchedBlogs
@@ -22,9 +26,37 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
     setIsLoading(false);
   }, []);
 
+  const [paginationData, setPaginationData] = useState<IPagination>({
+    itemsPerPage: maxValueToDisplay,
+    totalItems: blogs?.length ?? 0,
+    currentPage: 1,
+  });
+
+  //TODO: Add search query
+  const filteredBlogs = blogs;
+
+  //   blogs.filter((blog) => {
+  //   return blog.title.toLowerCase().includes("j".toLowerCase() || "");
+  // });
+
+  useEffect(() => {
+    if (filteredBlogs) {
+      setPaginationData((prev) => ({
+        ...prev,
+        totalItems: filteredBlogs.length,
+        // We might need to reset to page 1 if data changes
+        currentPage: 1,
+      }));
+    }
+  }, [filteredBlogs.length]);
+
   if (isLoading) {
     return null; // Let the server loading handle this
   }
+
+  let currentItems = GetCurrentItems(filteredBlogs, paginationData);
+  const totalPostsOnThisPage = currentItems.length; // Before slicing!
+  currentItems = currentItems.slice(0, visiblePostsCount);
 
   return blogs?.length === 0 ? (
     <section className="container mx-auto px-4 py-20">
@@ -81,13 +113,26 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
         <h2 className="text-3xl font-bold text-gray-900 mb-2">Latest Posts</h2>
       </div>
       <div className="flex flex-wrap -mx-4">
-        {blogs.map((blog) => (
+        {currentItems.map((blog) => (
           <BlogItem key={blog.id} blog={blog} />
         ))}
       </div>
-      <div className="flex justify-center mt-8">
-        <ShowMoreButton />
-      </div>
+      <Pagination
+        paginationData={paginationData}
+        setPaginationData={setPaginationData}
+        setVisiblePostsCount={setVisiblePostsCount}
+      />
+      {totalPostsOnThisPage > minValueToDisplay ? (
+        <div className="flex justify-center mt-8">
+          <ShowMoreButton
+            visiblePostsCount={visiblePostsCount}
+            setVisiblePostsCount={setVisiblePostsCount}
+            totalPostsOnThisPage={totalPostsOnThisPage}
+          />
+        </div>
+      ) : (
+        <></>
+      )}
     </section>
   );
 };
