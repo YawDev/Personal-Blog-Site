@@ -1,13 +1,16 @@
 import { IPagination } from "@/utils/types";
+import { minValueToDisplay } from "@/utils/VisiblePostSetttings";
 
 export function PageArrow({
   direction,
   paginationData,
   setPaginationData,
+  setVisiblePostsCount,
 }: {
   direction: string;
   paginationData: IPagination;
   setPaginationData: (paginationData: IPagination) => void;
+  setVisiblePostsCount: (value: number) => void;
 }) {
   const { totalItems, itemsPerPage, currentPage } = paginationData;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -33,14 +36,20 @@ export function PageArrow({
 
   return direction === "left" ? (
     <button
-      onClick={(e) => paginate(direction, e)}
+      onClick={(e) => {
+        paginate(direction, e);
+        setVisiblePostsCount(minValueToDisplay);
+      }}
       className={`${buttonBaseClasses} ${currentPage <= 1 ? `${disabledClasses} invisible` : ""}`}
     >
       ← Previous
     </button>
   ) : (
     <button
-      onClick={(e) => paginate(direction, e)}
+      onClick={(e) => {
+        paginate(direction, e);
+        setVisiblePostsCount(minValueToDisplay);
+      }}
       className={`${buttonBaseClasses} ${currentPage >= totalPages ? `${disabledClasses} invisible` : ""}`}
     >
       Next →

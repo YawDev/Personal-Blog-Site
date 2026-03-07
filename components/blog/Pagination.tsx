@@ -4,9 +4,11 @@ import { PageArrow } from "./PageArrow";
 const Pagination = ({
   paginationData,
   setPaginationData,
+  setVisiblePostsCount,
 }: {
   paginationData: IPagination;
   setPaginationData: (paginationData: IPagination) => void;
+  setVisiblePostsCount: (value: number) => void;
 }) => {
   const { totalItems, itemsPerPage, currentPage } = paginationData;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -28,12 +30,14 @@ const Pagination = ({
         direction="left"
         paginationData={paginationData}
         setPaginationData={setPaginationData}
+        setVisiblePostsCount={setVisiblePostsCount}
       />
 
       <PageArrow
         direction="right"
         paginationData={paginationData}
         setPaginationData={setPaginationData}
+        setVisiblePostsCount={setVisiblePostsCount}
       />
     </nav>
   );

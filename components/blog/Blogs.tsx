@@ -55,6 +55,7 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
   }
 
   let currentItems = GetCurrentItems(filteredBlogs, paginationData);
+  const totalPostsOnThisPage = currentItems.length; // Before slicing!
   currentItems = currentItems.slice(0, visiblePostsCount);
 
   return blogs?.length === 0 ? (
@@ -119,13 +120,14 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
       <Pagination
         paginationData={paginationData}
         setPaginationData={setPaginationData}
+        setVisiblePostsCount={setVisiblePostsCount}
       />
-      {currentItems.length === minValueToDisplay ||
-      currentItems.length === maxValueToDisplay ? (
+      {totalPostsOnThisPage > minValueToDisplay ? (
         <div className="flex justify-center mt-8">
           <ShowMoreButton
             visiblePostsCount={visiblePostsCount}
             setVisiblePostsCount={setVisiblePostsCount}
+            totalPostsOnThisPage={totalPostsOnThisPage}
           />
         </div>
       ) : (
