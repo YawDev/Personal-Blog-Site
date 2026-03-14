@@ -1,3 +1,4 @@
+import { normalizePosts, normalizePost } from "@/utils/mapping/mappers";
 import { Blog } from "@/utils/types";
 import axios from "axios";
 import https from "https";
@@ -31,29 +32,11 @@ export const GetPostsById = async (id: string): Promise<Blog | null> => {
     .get(`https://localhost:7052/blogs/${id}`, requestConfig)
     .then((response) => {
       console.log("Fetched post by Id: ", response.data);
-      return response.data as Blog;
+      return normalizePost(response.data);
     })
     .catch((error) => {
       console.error("Error fetching post: ", error);
       return null;
     });
-  return post as Blog;
-};
-
-const normalizePosts = (payload: unknown): Blog[] => {
-  if (Array.isArray(payload)) {
-    return payload as Blog[];
-  }
-
-  if (payload && typeof payload === "object") {
-    const candidateKeys = ["blogs", "posts", "data", "items"] as const;
-    for (const key of candidateKeys) {
-      const value = (payload as Record<string, unknown>)[key];
-      if (Array.isArray(value)) {
-        return value as Blog[];
-      }
-    }
-  }
-
-  return [];
+  return post;
 };

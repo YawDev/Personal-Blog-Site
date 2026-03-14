@@ -50,7 +50,6 @@ const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog | null }) => {
   if (isLoading) {
     return null; // Let the server loading handle this
   }
-  console.log("article: ", currentArticle);
 
   return (
     <article className="bg-white">

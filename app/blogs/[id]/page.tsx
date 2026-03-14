@@ -15,7 +15,9 @@ export default async function Page({
 }) {
   const { id } = await params;
   let fetchedBlog: Blog | null = await GetPostsById(id);
-
+  if (!fetchedBlog) {
+    //If blog isnt found, redirect to not found
+  }
   return (
     <>
       <BlogDetails fetchedBlog={fetchedBlog} />
