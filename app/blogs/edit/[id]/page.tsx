@@ -1,4 +1,4 @@
-import { FormMode } from "@/utils/FormHelpers";
+import { FormMode } from "@/utils/forms/FormHelpers";
 import { Blog } from "@/utils/types";
 import { SavePostForm } from "@/components/blog/save/SavePostForm";
 

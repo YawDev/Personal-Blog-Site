@@ -7,45 +7,50 @@ import BackToArticles from "./BackToArticles";
 import EditPostLink from "./save/EditPostLink";
 import { getFromLocalStorage } from "@/utils/browser/LocalStorage";
 
-const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog }) => {
-  const formatDate = (date: string) => {
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    }).format(new Date(date));
+const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog | null }) => {
+  const formatDate = (date: string | undefined) => {
+    if (date) {
+      return new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }).format(new Date(date));
+    }
   };
   const [isLoading, setIsLoading] = useState(true);
 
-  const [currentArticle, setCurrentArticle] = useState<Blog>(fetchedBlog);
-
-  const estimatedReadTime = Math.ceil(
-    currentArticle.content.split(" ").length / 200,
+  const [currentArticle, setCurrentArticle] = useState<Blog | null>(
+    fetchedBlog ?? null,
   );
+
+  const articleContent = currentArticle?.content ?? "";
+  const words = articleContent.trim()
+    ? articleContent.trim().split(/\s+/).length
+    : 0;
+  const estimatedReadTime = words > 0 ? Math.ceil(words / 200) : 0;
 
   useEffect(() => {
     // Remove localStorage once API is integrated and replace with fetchedBlog
-    var localStorage: any = getFromLocalStorage("blogs");
-    console.log("Local Storage Blogs:", localStorage);
-    var blogFromStorage: Blog | null = localStorage
-      ? JSON.parse(localStorage).find(
-          (b: { id: string }) => b.id === fetchedBlog.id,
-        )
-      : null;
+    // var localStorage: any = getFromLocalStorage("blogs");
+    // console.log("Local Storage Blogs:", localStorage);
+    // var blogFromStorage: Blog | null = localStorage
+    //   ? JSON.parse(localStorage).find(
+    //       (b: { id: string }) => b.id === fetchedBlog?.id,
+    //     )
+    //   : null;
 
     //Until we have an API, we'll check localStorage for the blog post details first, then fall back to the passed fetchedBlog (which is just a placeholder with the correct ID)
     // Set state to the blog from localStorage if found, otherwise use the fetchedBlog (which is just a placeholder with the correct ID until we integrate the API)
-    if (blogFromStorage) {
-      setCurrentArticle(blogFromStorage);
-    } else {
+    if (fetchedBlog) {
       setCurrentArticle(fetchedBlog);
     }
     setIsLoading(false);
-  }, []);
+  }, [fetchedBlog]);
 
   if (isLoading) {
     return null; // Let the server loading handle this
   }
+  console.log("article: ", currentArticle);
 
   return (
     <article className="bg-white">
@@ -54,10 +59,10 @@ const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog }) => {
         <div className="max-w-4xl mx-auto">
           <div className="flex justify-between items-center mb-8">
             <BackToArticles />
-            <EditPostLink id={currentArticle.id} />
+            <EditPostLink id={currentArticle?.id} />
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-            {currentArticle.title}
+            {currentArticle?.title}
           </h1>
 
           <div className="flex flex-wrap items-center gap-6 text-gray-600">
@@ -75,7 +80,7 @@ const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog }) => {
                   d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                 />
               </svg>
-              {formatDate(currentArticle.datePosted)}
+              {formatDate(currentArticle?.datePosted)}
             </div>
             <div className="flex items-center">
               <svg
@@ -101,13 +106,13 @@ const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog }) => {
       <main className="py-12 px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           {/* Article Preview/Summary */}
-          {currentArticle.preview && (
+          {currentArticle?.preview && (
             <div className="bg-teal-50 border-l-4 border-teal-600 p-6 mb-8 rounded-r-lg">
               <h2 className="text-lg font-semibold text-teal-900 mb-2">
                 Article Summary
               </h2>
               <p className="text-teal-800 leading-relaxed">
-                {currentArticle.preview}
+                {currentArticle?.preview}
               </p>
             </div>
           )}
@@ -115,7 +120,7 @@ const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog }) => {
           {/* Main Content */}
           <div className="prose prose-lg prose-gray max-w-none">
             <div className="whitespace-pre-wrap leading-relaxed text-gray-700 text-lg">
-              {currentArticle.content}
+              {currentArticle?.content}
             </div>
           </div>
 
