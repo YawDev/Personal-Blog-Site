@@ -1,6 +1,7 @@
 import { FormMode } from "@/utils/forms/FormHelpers";
 import { Blog } from "@/utils/types";
 import { SavePostForm } from "@/components/blog/save/SavePostForm";
+import { GetPostsById } from "@/service/PersonalBlogService";
 
 export default async function EditBlogPost({
   params,
@@ -8,11 +9,10 @@ export default async function EditBlogPost({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  //const blogToEdit = await fetchById(id);
-
-  let blogToEdit: Blog | null = null;
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
+  let blogToEdit: Blog | null = await GetPostsById(id);
+  if (!blogToEdit) {
+    //If blog isnt found, redirect to not found
+  }
   return (
     <SavePostForm
       mode={FormMode.EditPublished}
@@ -23,6 +23,7 @@ export default async function EditBlogPost({
           preview: "",
           content: "",
           datePosted: new Date().toISOString(),
+          userId: "",
         }
       }
     />

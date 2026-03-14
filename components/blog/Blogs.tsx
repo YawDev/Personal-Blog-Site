@@ -10,7 +10,6 @@ import {
   maxValueToDisplay,
   minValueToDisplay,
 } from "@/utils/pagination/VisiblePostSetttings";
-import { getFromLocalStorage } from "@/utils/browser/LocalStorage";
 const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +53,6 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
     return null; // Let the server loading handle this
   }
 
-  console.log("Blogs to display:", filteredBlogs);
   let currentItems = GetCurrentItems(filteredBlogs, paginationData);
   const totalPostsOnThisPage = currentItems.length; // Actual total of available posts before slicing!
   currentItems = currentItems.slice(0, visiblePostsCount);

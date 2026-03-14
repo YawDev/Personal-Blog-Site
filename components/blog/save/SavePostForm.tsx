@@ -13,7 +13,7 @@ export function SavePostForm({
   blogData,
 }: {
   mode: FormMode;
-  blogData: Blog | null;
+  blogData: Blog;
 }) {
   // Fetch BlogToEdit from localStorage using ID passed from server until we integrate API
   const [isLoading, setIsLoading] = useState(true);
