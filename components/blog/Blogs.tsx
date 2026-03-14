@@ -18,13 +18,13 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
 
   useEffect(() => {
     // Remove localStorage once API is integrated and replace with fetchedBlogs
-    const storedBlogs =
-      fetchedBlogs?.length > 0 ? fetchedBlogs : getFromLocalStorage("blogs");
+    // const storedBlogs =
+    //   fetchedBlogs?.length > 0 ? fetchedBlogs : getFromLocalStorage("blogs");
 
-    const blogsData: Blog[] = storedBlogs ? JSON.parse(storedBlogs) : [];
-    setBlogs(blogsData);
+    // const blogsData: Blog[] = storedBlogs ? JSON.parse(storedBlogs) : [];
+    setBlogs(Array.isArray(fetchedBlogs) ? fetchedBlogs : []);
     setIsLoading(false);
-  }, []);
+  }, [fetchedBlogs]);
 
   const [paginationData, setPaginationData] = useState<IPagination>({
     itemsPerPage: maxValueToDisplay,
@@ -54,6 +54,7 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
     return null; // Let the server loading handle this
   }
 
+  console.log("Blogs to display:", filteredBlogs);
   let currentItems = GetCurrentItems(filteredBlogs, paginationData);
   const totalPostsOnThisPage = currentItems.length; // Actual total of available posts before slicing!
   currentItems = currentItems.slice(0, visiblePostsCount);

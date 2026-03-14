@@ -4,6 +4,10 @@ export const GetCurrentItems = (
   filteredBlogs: Blog[],
   paginationData: IPagination,
 ): Blog[] => {
+  if (!Array.isArray(filteredBlogs)) {
+    return [];
+  }
+
   const indexOfLastItem =
     paginationData.currentPage * paginationData.itemsPerPage;
 
