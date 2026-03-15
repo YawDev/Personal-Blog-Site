@@ -1,13 +1,14 @@
 "use client";
 
 import { FormMode } from "@/utils/forms/FormHelpers";
-import useFormValidation from "@/hooks/useFormValidation";
+import useFormValidation from "@/hooks/usePostForm";
 import { Blog } from "@/utils/types";
 import { useEffect, useState } from "react";
 import setPageTitle from "@/formHelpers/formUtils";
 import BackToArticles from "../BackToArticles";
 import SaveFormCard from "./SaveFormCard";
 import { getFromLocalStorage } from "@/utils/browser/LocalStorage";
+import usePostForm from "@/hooks/usePostForm";
 export function SavePostForm({
   mode,
   blogData,
@@ -20,7 +21,7 @@ export function SavePostForm({
   const [currentBlogData, setCurrentBlogData] = useState<Blog | null>(blogData);
 
   const { formState, handleInputChange, handleBlur, loadExistingData } =
-    useFormValidation({
+    usePostForm({
       title: currentBlogData?.title || "",
       preview: currentBlogData?.preview || "",
       content: currentBlogData?.content || "",

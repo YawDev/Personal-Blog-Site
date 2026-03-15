@@ -1,5 +1,6 @@
+import { IPostFormState } from "@/formHelpers/formTypes";
 import SaveDraftToLocalStorage from "@/utils/browser/InMemory";
-import { FormMode, IFormState } from "@/utils/forms/FormHelpers";
+import { FormMode } from "@/utils/forms/FormHelpers";
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
 import { v4 as uuid } from "uuid";
@@ -8,7 +9,7 @@ export function SaveDraftButton({
   formState,
   mode,
 }: {
-  formState: IFormState;
+  formState: IPostFormState;
   mode: FormMode;
 }) {
   const router = useRouter();
@@ -26,7 +27,7 @@ export function SaveDraftButton({
   );
 }
 
-function handleOnClick(router: AppRouterInstance, formState: IFormState) {
+function handleOnClick(router: AppRouterInstance, formState: IPostFormState) {
   // Implement save draft logic here, such as saving to localStorage or making an API call
   console.log("Save Draft button clicked");
   let formData = {
