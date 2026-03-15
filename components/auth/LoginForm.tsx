@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import { LoginApi } from "@/service/PersonalBlogService";
 import { InputFormField } from "../blog/save/InputFormField";
 import useLoginForm from "@/hooks/useLoginForm";
 
@@ -21,7 +21,21 @@ const LoginForm = () => {
         </div>
 
         <div className="bg-white rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,0.12)] border border-white/70 p-8 md:p-10">
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form
+            className="space-y-6"
+            onSubmit={async (e) => {
+              e.preventDefault();
+              if (formState.validForSubmit) {
+                var result = await LoginApi({
+                  userName: formState.userName.value,
+                  password: formState.password.value,
+                });
+                if (result) {
+                  //successfully log user in. set loggedInState, userContext, redirect to /blogs
+                }
+              }
+            }}
+          >
             {/* Username Field */}
             <InputFormField
               formLabelProps={{

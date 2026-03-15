@@ -1,6 +1,7 @@
 import BackToArticles from "../blog/BackToArticles";
 import useSignUpForm from "@/hooks/useSignUpForm";
 import { InputFormField } from "../blog/save/InputFormField";
+import { SignUpApi } from "@/service/PersonalBlogService";
 
 const SignUpForm = () => {
   const { formState, handleInputChange, handleBlur } = useSignUpForm({
@@ -30,7 +31,18 @@ const SignUpForm = () => {
 
         <div className="max-w-xl mx-auto">
           <div className="bg-white rounded-3xl shadow-[0_24px_60px_rgba(15,23,42,0.12)] border border-white/70 p-8 md:p-10">
-            <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+            <form
+              className="space-y-6"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (formState.validForSubmit) {
+                  var result = await SignUpApi(formState);
+                  if (result) {
+                    //successfully log user in. set loggedInState, userContext, redirect to /blogs
+                  }
+                }
+              }}
+            >
               {/* Username Field */}
               <InputFormField
                 formLabelProps={{

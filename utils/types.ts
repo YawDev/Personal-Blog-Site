@@ -18,11 +18,26 @@ export type Draft = IPost & {
 
 export type User = {
   id: string; // GUID
-  username: string;
+  userName: string;
   email: string;
   displayName?: string; // Optional public name for profile display
   avatar?: string; // Optional profile picture URL
   role: "admin" | "user"; // Keep as union type for TypeScript type safety
+};
+
+//User Auth
+export type LoginRequest = {
+  userName: string;
+  password: string;
+};
+
+export type SignUpRequest = {
+  userName: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 };
 
 // Pagination

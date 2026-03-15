@@ -1,4 +1,4 @@
-import { Blog } from "../types";
+import { Blog, User } from "../types";
 
 export const normalizePosts = (payload: any): Blog[] => {
   const data = payload?.blogs || [];
@@ -15,7 +15,6 @@ export const normalizePosts = (payload: any): Blog[] => {
 
 export const normalizePost = (payload: any): Blog => {
   const data = payload?.blog;
-  console.log("title-get-by-id: ", data.title);
   return {
     id: data.id,
     title: data.title,
@@ -23,5 +22,17 @@ export const normalizePost = (payload: any): Blog => {
     preview: data.preview,
     datePosted: data.datePosted,
     userId: data.userId,
+  };
+};
+
+export const normalizeUser = (payload: any): User => {
+  const data = payload?.user;
+  return {
+    id: data.id,
+    userName: data.userName,
+    email: data.Email,
+    displayName: data.displayName,
+    avatar: data.avatar,
+    role: data.role,
   };
 };
