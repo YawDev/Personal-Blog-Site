@@ -28,3 +28,33 @@ export type FormLabelProps = {
   className?: string;
   children: React.ReactNode;
 };
+
+export interface IPostFormState {
+  title: FormField;
+  preview: FormField;
+  content: FormField;
+  validForSubmit: boolean;
+}
+
+export interface ILoginFormState {
+  userName: FormField;
+  password: FormField;
+  resetPassword: boolean;
+  validForSubmit: boolean;
+}
+
+export interface ISignUpFormState {
+  userName: FormField;
+  password: FormField;
+  firstName: FormField;
+  lastName: FormField;
+  email: FormField;
+  confirmPassword: FormField;
+  validForSubmit: boolean;
+}
+
+export type FormField = {
+  value: string;
+  error: string;
+  touched: boolean;
+};
