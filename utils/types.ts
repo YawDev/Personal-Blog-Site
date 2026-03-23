@@ -46,3 +46,10 @@ export type IPagination = {
   totalItems: number;
   currentPage: number;
 };
+
+// API Error Response
+export type LoginResponse = {
+  status: number;
+  data: User | any;
+  message: string;
+};

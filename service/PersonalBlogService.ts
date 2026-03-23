@@ -4,7 +4,13 @@ import {
   normalizePost,
   normalizeUser,
 } from "@/utils/mapping/mappers";
-import { Blog, LoginRequest, SignUpRequest, User } from "@/utils/types";
+import {
+  Blog,
+  LoginRequest,
+  LoginResponse,
+  SignUpRequest,
+  User,
+} from "@/utils/types";
 import axios from "axios";
 import https from "https";
 
@@ -16,6 +22,7 @@ const devHttpsAgent =
 const requestConfig = {
   httpsAgent: devHttpsAgent,
   timeout: 5000,
+  //withCredentials: true,
 };
 
 export const GetAllPosts = async (): Promise<Blog[]> => {
@@ -46,18 +53,44 @@ export const GetPostsById = async (id: string): Promise<Blog | null> => {
   return post;
 };
 
-export const LoginApi = async (body: LoginRequest): Promise<User | null> => {
-  var user = await axios
-    .post("https://localhost:7052/auth/login", body, requestConfig)
+export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
+  var res = await axios
+    .post("https://localhost:7052/api/auth/login", body, requestConfig)
     .then((response) => {
+      console.log("response", response);
       console.log("User authenticated: ", response.data);
-      return normalizeUser(response.data);
+      if (response.status === 401) {
+        return {
+          status: response.status,
+          data: null,
+          message: "Credentials failed authentication.",
+        };
+      } else {
+        return {
+          status: response.status,
+          data: normalizeUser(response.data),
+          message: "Login successful",
+        };
+      }
     })
     .catch((error) => {
       console.error("Error authenticating user: ", error);
-      return null;
+
+      if (error.response?.status === 401) {
+        return {
+          status: error.response?.status,
+          data: null,
+          message: "Credentials failed authentication.",
+        };
+      }
+      return {
+        status: error.response?.status,
+        data: null,
+        message: "Server is currently down.",
+      };
     });
-  return user;
+
+  return res;
 };
 
 export const SignUpApi = async (data: ISignUpFormState): Promise<boolean> => {
@@ -71,7 +104,7 @@ export const SignUpApi = async (data: ISignUpFormState): Promise<boolean> => {
   };
 
   var user = await axios
-    .post("https://localhost:7052/auth/register", body, requestConfig)
+    .post("https://localhost:7052/api/auth/register", body, requestConfig)
     .then((response) => {
       console.log("Account successfully registered!");
       return response.data;
@@ -85,7 +118,7 @@ export const SignUpApi = async (data: ISignUpFormState): Promise<boolean> => {
 
 export const logoutApi = async (): Promise<boolean> => {
   var user = await axios
-    .post("https://localhost:7052/auth/logout", null, requestConfig)
+    .post("https://localhost:7052/api/auth/logout", null, requestConfig)
     .then((response) => {
       console.log("logout success");
       return response.data;
