@@ -22,7 +22,7 @@ const devHttpsAgent =
 const requestConfig = {
   httpsAgent: devHttpsAgent,
   timeout: 5000,
-  //withCredentials: true,
+  withCredentials: true,
 };
 
 export const GetAllPosts = async (): Promise<Blog[]> => {
@@ -55,7 +55,7 @@ export const GetPostsById = async (id: string): Promise<Blog | null> => {
 
 export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
   var res = await axios
-    .post("https://localhost:7052/api/auth/login", body, requestConfig)
+    .post("/api/auth/login", body, requestConfig)
     .then((response) => {
       console.log("response", response);
       console.log("User authenticated: ", response.data);
@@ -68,14 +68,14 @@ export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
       } else {
         return {
           status: response.status,
-          data: normalizeUser(response.data),
+          data: {}, //normalizeUser(response.data),
           message: "Login successful",
         };
       }
     })
     .catch((error) => {
       console.error("Error authenticating user: ", error);
-
+      console.log(error.response);
       if (error.response?.status === 401) {
         return {
           status: error.response?.status,
@@ -87,6 +87,7 @@ export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
         status: error.response?.status,
         data: null,
         message: "Server is currently down.",
+        error: error,
       };
     });
 

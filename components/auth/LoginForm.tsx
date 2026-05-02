@@ -4,9 +4,13 @@ import { InputFormField } from "../blog/save/InputFormField";
 import useLoginForm from "@/hooks/useLoginForm";
 import AlertMessage from "../shared/AlertMessage";
 import { useEffect, useState } from "react";
-import { LoginResponse } from "@/utils/types";
+import { LoginResponse, User } from "@/utils/types";
+import { useAuth } from "@/providers/auth-provider";
+import router from "next/dist/shared/lib/router/router";
 
 const LoginForm = () => {
+  const { setUser } = useAuth();
+
   const { formState, handleInputChange, handleBlur } = useLoginForm({
     userName: "",
     password: "",
@@ -59,8 +63,14 @@ const LoginForm = () => {
                     userName: formState.userName.value,
                     password: formState.password.value,
                   });
-                  if (result.status === 200) {
+                  if (
+                    result.status === 200 &&
+                    result.data &&
+                    "id" in result.data
+                  ) {
                     //successfully log user in. set loggedInState, userContext, redirect to /blogs
+                    setUser(result.data);
+                    window.location.href = "/blogs";
                   } else if (result.status === 401) {
                     setAlert((prev) => ({
                       ...prev,

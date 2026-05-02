@@ -26,13 +26,19 @@ export const normalizePost = (payload: any): Blog => {
 };
 
 export const normalizeUser = (payload: any): User => {
-  const data = payload?.user;
+  const data = payload?.User || payload?.user; // Handle both cases
+  console.log(payload, "payload received");
+
+  if (!data) {
+    throw new Error("User data not found in response");
+  }
+
   return {
-    id: data.id,
-    userName: data.userName,
-    email: data.Email,
+    id: data.Id || data.id,
+    userName: data.UserName || data.userName,
+    email: data.Email || data.email,
     displayName: data.displayName,
     avatar: data.avatar,
-    role: data.role,
+    role: data.role || "user", // Default role since backend doesn't provide it
   };
 };

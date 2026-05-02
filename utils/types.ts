@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 // Domain Entities
 export interface IPost {
   id: string;
@@ -52,4 +54,22 @@ export type LoginResponse = {
   status: number;
   data: User | any;
   message: string;
+};
+
+// User Context
+export interface IUserContext {
+  user: User | null;
+  isLoggedIn: boolean;
+  setUser: (value: User) => void;
+}
+
+// BFF types
+export type UpstreamLoginResponse = {
+  user?: {
+    id?: string;
+    userName?: string;
+    email?: string;
+    Email?: string;
+  };
+  message?: string;
 };
