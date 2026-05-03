@@ -1,34 +1,20 @@
 import { normalizeUser } from "@/utils/mapping/mappers";
 import { UpstreamLoginResponse } from "@/utils/types";
 import { NextResponse } from "next/server";
+import { createHttpClient } from "@/utils/httpClientUtil";
 import axios from "axios";
-import https from "https";
 
-const devHttpsAgent =
-  process.env.NODE_ENV !== "production"
-    ? new https.Agent({ rejectUnauthorized: false })
-    : undefined;
-
-const requestConfig = {
-  httpsAgent: devHttpsAgent,
-  timeout: 5000,
-  withCredentials: true,
-};
+const httpClient = createHttpClient();
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const response = await axios.post(
-      "https://localhost:7052/api/auth/login",
-      body,
-      {
-        ...requestConfig,
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const response = await httpClient.post("/api/auth/login", body, {
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+    });
 
     const data: UpstreamLoginResponse = response.data;
 
