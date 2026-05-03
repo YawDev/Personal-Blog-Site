@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from "react";
+
 // Domain Entities
 export interface IPost {
   id: string;
@@ -18,11 +20,26 @@ export type Draft = IPost & {
 
 export type User = {
   id: string; // GUID
-  username: string;
+  userName: string;
   email: string;
   displayName?: string; // Optional public name for profile display
   avatar?: string; // Optional profile picture URL
   role: "admin" | "user"; // Keep as union type for TypeScript type safety
+};
+
+//User Auth
+export type LoginRequest = {
+  userName: string;
+  password: string;
+};
+
+export type SignUpRequest = {
+  userName: string;
+  password: string;
+  confirmPassword: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 };
 
 // Pagination
@@ -30,4 +47,29 @@ export type IPagination = {
   itemsPerPage: number;
   totalItems: number;
   currentPage: number;
+};
+
+// API Error Response
+export type LoginResponse = {
+  status: number;
+  data: User | any;
+  message: string;
+};
+
+// User Context
+export interface IUserContext {
+  user: User | null;
+  isLoggedIn: boolean;
+  setUser: (value: User) => void;
+}
+
+// BFF types
+export type UpstreamLoginResponse = {
+  user?: {
+    id?: string;
+    userName?: string;
+    email?: string;
+    Email?: string;
+  };
+  message?: string;
 };

@@ -1,4 +1,4 @@
-import { Blog } from "../types";
+import { Blog, User } from "../types";
 
 export const normalizePosts = (payload: any): Blog[] => {
   const data = payload?.blogs || [];
@@ -15,7 +15,6 @@ export const normalizePosts = (payload: any): Blog[] => {
 
 export const normalizePost = (payload: any): Blog => {
   const data = payload?.blog;
-  console.log("title-get-by-id: ", data.title);
   return {
     id: data.id,
     title: data.title,
@@ -23,5 +22,23 @@ export const normalizePost = (payload: any): Blog => {
     preview: data.preview,
     datePosted: data.datePosted,
     userId: data.userId,
+  };
+};
+
+export const normalizeUser = (payload: any): User => {
+  const data = payload?.User || payload?.user; // Handle both cases
+  console.log(payload, "payload received");
+
+  if (!data) {
+    throw new Error("User data not found in response");
+  }
+
+  return {
+    id: data.Id || data.id,
+    userName: data.UserName || data.userName,
+    email: data.Email || data.email,
+    displayName: data.displayName,
+    avatar: data.avatar,
+    role: data.role || "user", // Default role since backend doesn't provide it
   };
 };

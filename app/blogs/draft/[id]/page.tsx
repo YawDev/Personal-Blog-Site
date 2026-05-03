@@ -22,6 +22,7 @@ const EditDraftPage = async ({
           preview: "",
           content: "",
           datePosted: new Date().toISOString(),
+          userId: "",
         }
       }
     />
