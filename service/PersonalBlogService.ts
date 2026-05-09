@@ -1,36 +1,42 @@
 import { ISignUpFormState } from "@/formHelpers/formTypes";
 import {
-  normalizePosts,
-  normalizePost,
-  normalizeUser,
-} from "@/utils/mapping/mappers";
-import {
   Blog,
   LoginRequest,
   LoginResponse,
   SignUpRequest,
-  User,
 } from "@/utils/types";
 import axios from "axios";
-import https from "https";
+import { createHttpClient } from "@/utils/httpClientUtil";
 
-const devHttpsAgent =
-  process.env.NODE_ENV !== "production"
-    ? new https.Agent({ rejectUnauthorized: false })
-    : undefined;
+const httpClient = createHttpClient();
 
-const requestConfig = {
-  httpsAgent: devHttpsAgent,
-  timeout: 5000,
-  withCredentials: true,
+const getBffBaseUrl = (): string => {
+  if (typeof window !== "undefined") {
+    return "";
+  }
+
+  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 };
 
 export const GetAllPosts = async (): Promise<Blog[]> => {
   var posts = await axios
-    .get("https://localhost:7052/blogs", requestConfig)
+    .get(`${getBffBaseUrl()}/api/blogs`, {
+      timeout: 5000,
+      withCredentials: true,
+    })
     .then((response) => {
-      console.log("Fetched posts:", response.data);
-      return normalizePosts(response.data);
+      if (response?.status === 200) {
+        console.log("Fetched posts:", response.data);
+        console.log("Posts fetched successfully.");
+        console.log(
+          "Posts data structure:",
+          JSON.stringify(response.data, null, 2),
+        );
+        return response.data?.data ?? [];
+      } else {
+        console.log("Failed to fetch posts.");
+        return [];
+      }
     })
     .catch((error) => {
       console.error("Error fetching posts:", error);
@@ -41,10 +47,13 @@ export const GetAllPosts = async (): Promise<Blog[]> => {
 
 export const GetPostsById = async (id: string): Promise<Blog | null> => {
   var post = await axios
-    .get(`https://localhost:7052/blogs/${id}`, requestConfig)
+    .get(`${getBffBaseUrl()}/api/blogById?id=${id}`, {
+      timeout: 5000,
+      withCredentials: true,
+    })
     .then((response) => {
       console.log("Fetched post by Id: ", response.data);
-      return normalizePost(response.data);
+      return response.data?.data ?? null;
     })
     .catch((error) => {
       console.error("Error fetching post: ", error);
@@ -54,8 +63,8 @@ export const GetPostsById = async (id: string): Promise<Blog | null> => {
 };
 
 export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
-  var res = await axios
-    .post("/api/auth/login", body, requestConfig)
+  var res = await httpClient
+    .post(`${getBffBaseUrl()}/api/auth/login`, body)
     .then((response) => {
       console.log("response", response);
       console.log("User authenticated: ", response.data);
@@ -105,28 +114,34 @@ export const SignUpApi = async (data: ISignUpFormState): Promise<boolean> => {
   };
 
   var user = await axios
-    .post("https://localhost:7052/api/auth/register", body, requestConfig)
+    .post(`${getBffBaseUrl()}/api/auth/register`, body, {
+      timeout: 5000,
+      withCredentials: true,
+    })
     .then((response) => {
       console.log("Account successfully registered!");
-      return response.data;
+      return true;
     })
     .catch((error) => {
       console.error("Error signing up user: ", error);
-      return null;
+      return false;
     });
   return user;
 };
 
 export const logoutApi = async (): Promise<boolean> => {
   var user = await axios
-    .post("https://localhost:7052/api/auth/logout", null, requestConfig)
+    .post(`${getBffBaseUrl()}/api/auth/logout`, null, {
+      timeout: 5000,
+      withCredentials: true,
+    })
     .then((response) => {
       console.log("logout success");
-      return response.data;
+      return true;
     })
     .catch((error) => {
       console.error("Error logging out: ", error);
-      return null;
+      return false;
     });
   return user;
 };

@@ -73,3 +73,20 @@ export type UpstreamLoginResponse = {
   };
   message?: string;
 };
+
+export type UpstreamBlogsResponse = {
+  blogs?: [];
+  message?: string;
+};
+
+export type UpstreamBlogByIdResponse = {
+  blog?: {
+    id: string;
+    title: string;
+    content: string;
+    preview: string;
+    datePosted: string;
+    userId: string;
+  };
+  message?: string;
+};
