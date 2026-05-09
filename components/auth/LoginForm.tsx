@@ -17,9 +17,14 @@ const LoginForm = () => {
     resetPassword: false,
   });
 
-  const [alert, setAlert] = useState<{ show: boolean; message: string }>({
+  const [alert, setAlert] = useState<{
+    show: boolean;
+    message: string;
+    apiStatus: number;
+  }>({
     show: false,
     message: "",
+    apiStatus: 0,
   });
 
   useEffect(() => {
@@ -42,7 +47,10 @@ const LoginForm = () => {
                 : "mb-0 max-h-0 opacity-0"
             }`}
           >
-            <AlertMessage message={alert.message} variant="error" />
+            <AlertMessage
+              message={alert.message}
+              variant={alert.apiStatus !== 200 ? "error" : "default"}
+            />
           </div>
 
           {/* Header */}
@@ -83,6 +91,7 @@ const LoginForm = () => {
                       ...prev,
                       show: true,
                       message: result.message,
+                      apiStatus: result.status,
                     }));
                   }
                 }
