@@ -1,43 +1,37 @@
-import { normalizeUser } from "@/utils/mapping/mappers";
-import { UpstreamLoginResponse } from "@/utils/types";
+import { normalizePosts } from "@/utils/mapping/mappers";
 import { NextResponse } from "next/server";
 import axios from "axios";
 import { createHttpClient } from "@/utils/httpClientUtil";
+import { UpstreamBlogsResponse } from "@/utils/types";
 
-export async function POST(request: Request) {
+export async function GET(request: Request) {
   try {
-    const body = await request.json();
     const httpClient = createHttpClient();
 
-    const response = await httpClient.post("/api/auth/login", body, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await httpClient.get("/blogs");
 
-    const data: UpstreamLoginResponse = response.data;
+    const data: UpstreamBlogsResponse = response.data;
 
-    console.log("Request body:", body);
     console.log("Backend response status:", response.status);
     console.log("Backend response data:", data);
 
     console.log("bff call", data);
-    console.log("Attempting to normalize user data...");
+    console.log("Attempting to normalize posts data...");
     console.log("Data structure:", JSON.stringify(data, null, 2));
 
-    const normalizedUser = normalizeUser(data);
-    console.log("Normalized user:", normalizedUser);
+    const normalizedPosts = normalizePosts(data);
+    console.log("Normalized posts:", normalizedPosts);
 
     return NextResponse.json(
       {
         status: 200,
-        data: normalizedUser,
-        message: "Login successful",
+        data: normalizedPosts,
+        message: "Posts fetch successful",
       },
       { status: 200 },
     );
   } catch (error) {
-    console.error("=== LOGIN API ROUTE ERROR ===");
+    console.error("=== GET POSTS API ROUTE ERROR ===");
     console.error("Error details:", error);
 
     // Handle axios errors specifically
@@ -52,7 +46,7 @@ export async function POST(request: Request) {
         {
           status,
           data: null,
-          message: errorData?.message ?? "Login failed",
+          message: errorData?.message ?? "Posts fetch failed",
         },
         { status },
       );
@@ -75,7 +69,7 @@ export async function POST(request: Request) {
         message:
           error instanceof Error
             ? error.message
-            : "An error occurred during login.",
+            : "An error occurred during fetching all posts.",
       },
       { status: 500 },
     );
