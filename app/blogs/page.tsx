@@ -1,13 +1,13 @@
 import BlogList from "@/components/blog/Blogs";
 import { Blog } from "../../utils/types";
+import { GetAllPosts } from "@/service/PersonalBlogService";
 
 export default async function BlogsPage() {
-  let fetchedBlogs: Blog[] | null = null;
-  await new Promise((resolve) => setTimeout(resolve, 500));
+  let fetchedBlogs: Blog[] = await GetAllPosts();
 
   return (
     <>
-      <BlogList fetchedBlogs={[]} />
+      <BlogList fetchedBlogs={fetchedBlogs} />
     </>
   );
 }

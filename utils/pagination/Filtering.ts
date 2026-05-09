@@ -1,9 +1,13 @@
-import { Blog, IPagination } from "./types";
+import { Blog, IPagination } from "../types";
 
 export const GetCurrentItems = (
   filteredBlogs: Blog[],
   paginationData: IPagination,
 ): Blog[] => {
+  if (!Array.isArray(filteredBlogs)) {
+    return [];
+  }
+
   const indexOfLastItem =
     paginationData.currentPage * paginationData.itemsPerPage;
 

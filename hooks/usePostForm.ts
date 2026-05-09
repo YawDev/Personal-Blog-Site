@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { FormValidationResult, IFormState } from "@/utils/FormHelpers";
+import { IPostFormState } from "@/formHelpers/formTypes";
+import { PostFormValidationResult } from "@/utils/forms/FormHelpers";
 
-const useFormValidation = (initialValues: {
+const usePostForm = (initialValues: {
   title: string;
   preview: string;
   content: string;
 }) => {
-  const [formState, setFormState] = useState<IFormState>({
+  const [formState, setFormState] = useState<IPostFormState>({
     title: { value: initialValues.title, error: "", touched: false },
     preview: { value: initialValues.preview, error: "", touched: false },
     content: { value: initialValues.content, error: "", touched: false },
@@ -44,7 +45,7 @@ const useFormValidation = (initialValues: {
       return { ...newState };
     });
 
-    let result = FormValidationResult(field, value);
+    let result = PostFormValidationResult(field, value);
 
     if (result) {
       setFormState((prev) => {
@@ -121,4 +122,4 @@ const useFormValidation = (initialValues: {
   };
 };
 
-export default useFormValidation;
+export default usePostForm;

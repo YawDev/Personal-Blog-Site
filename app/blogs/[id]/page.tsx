@@ -1,7 +1,7 @@
-import { getFromLocalStorage } from "@/utils/LocalStorage";
 import { Blog } from "@/utils/types";
 import BlogDetails from "@/components/blog/BlogDetails";
 import { Metadata } from "next";
+import { GetPostsById } from "@/service/PersonalBlogService";
 
 export const metadata: Metadata = {
   title: "Post Details",
@@ -14,26 +14,13 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-
-  console.log(id);
-
-  let fetchedBlog: Blog | null = null;
-
-  await new Promise((resolve) => setTimeout(resolve, 500));
-
+  let fetchedBlog: Blog | null = await GetPostsById(id);
+  if (!fetchedBlog) {
+    //If blog isnt found, redirect to not found
+  }
   return (
     <>
-      <BlogDetails
-        fetchedBlog={
-          fetchedBlog || {
-            id: id, // Using passed ID to get blog from localStorage in client component
-            title: "Here is a sample blog post", // Placeholder title
-            datePosted: new Date().toISOString(), // Placeholder date
-            content: "This is the content of the blog post.", // Placeholder content
-            preview: "This is the preview of the blog post.", // Placeholder preview
-          }
-        }
-      />
+      <BlogDetails fetchedBlog={fetchedBlog} />
     </>
   );
 }

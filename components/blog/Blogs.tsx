@@ -4,13 +4,12 @@ import { Blog, IPagination } from "@/utils/types";
 import BlogItem from "./BlogItem";
 import ShowMoreButton from "./ShowMore";
 import { useEffect, useState } from "react";
-import { getFromLocalStorage } from "@/utils/LocalStorage";
-import { GetCurrentItems } from "@/utils/Filtering";
+import { GetCurrentItems } from "@/utils/pagination/Filtering";
 import Pagination from "./Pagination";
 import {
   maxValueToDisplay,
   minValueToDisplay,
-} from "@/utils/VisiblePostSetttings";
+} from "@/utils/pagination/VisiblePostSetttings";
 const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,13 +17,13 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
 
   useEffect(() => {
     // Remove localStorage once API is integrated and replace with fetchedBlogs
-    const storedBlogs =
-      fetchedBlogs?.length > 0 ? fetchedBlogs : getFromLocalStorage("blogs");
+    // const storedBlogs =
+    //   fetchedBlogs?.length > 0 ? fetchedBlogs : getFromLocalStorage("blogs");
 
-    const blogsData: Blog[] = storedBlogs ? JSON.parse(storedBlogs) : [];
-    setBlogs(blogsData);
+    // const blogsData: Blog[] = storedBlogs ? JSON.parse(storedBlogs) : [];
+    setBlogs(Array.isArray(fetchedBlogs) ? fetchedBlogs : []);
     setIsLoading(false);
-  }, []);
+  }, [fetchedBlogs]);
 
   const [paginationData, setPaginationData] = useState<IPagination>({
     itemsPerPage: maxValueToDisplay,
@@ -55,7 +54,7 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
   }
 
   let currentItems = GetCurrentItems(filteredBlogs, paginationData);
-  const totalPostsOnThisPage = currentItems.length; // Before slicing!
+  const totalPostsOnThisPage = currentItems.length; // Actual total of available posts before slicing!
   currentItems = currentItems.slice(0, visiblePostsCount);
 
   return blogs?.length === 0 ? (
@@ -122,17 +121,20 @@ const BlogList = ({ fetchedBlogs }: { fetchedBlogs: Blog[] }) => {
         setPaginationData={setPaginationData}
         setVisiblePostsCount={setVisiblePostsCount}
       />
-      {totalPostsOnThisPage > minValueToDisplay ? (
-        <div className="flex justify-center mt-8">
-          <ShowMoreButton
-            visiblePostsCount={visiblePostsCount}
-            setVisiblePostsCount={setVisiblePostsCount}
-            totalPostsOnThisPage={totalPostsOnThisPage}
-          />
-        </div>
-      ) : (
-        <></>
-      )}
+      {
+        //Toggle show more/less with actual available number of posts on current page.
+        totalPostsOnThisPage > minValueToDisplay ? (
+          <div className="flex justify-center mt-8">
+            <ShowMoreButton
+              visiblePostsCount={visiblePostsCount}
+              setVisiblePostsCount={setVisiblePostsCount}
+              totalPostsOnThisPage={totalPostsOnThisPage}
+            />
+          </div>
+        ) : (
+          <></>
+        )
+      }
     </section>
   );
 };
