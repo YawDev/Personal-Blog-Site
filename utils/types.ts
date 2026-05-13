@@ -52,7 +52,7 @@ export type IPagination = {
 // API Error Response
 export type LoginResponse = {
   status: number;
-  data: User | any;
+  data: User | null;
   message: string;
 };
 
@@ -60,7 +60,8 @@ export type LoginResponse = {
 export interface IUserContext {
   user: User | null;
   isLoggedIn: boolean;
-  setUser: (value: User) => void;
+  isLoading: boolean;
+  setUser: (value: User | null) => void;
 }
 
 // BFF types
