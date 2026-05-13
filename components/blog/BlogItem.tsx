@@ -1,4 +1,5 @@
 import { Blog } from "@/utils/types";
+import Link from "next/link";
 import { Dispatch, SetStateAction } from "react";
 
 const BlogItem = ({ blog }: { blog: Blog }) => {
@@ -17,12 +18,12 @@ const BlogItem = ({ blog }: { blog: Blog }) => {
             {blog.preview ||
               "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."}
           </p>
-          <a
+          <Link
             href={`/blogs/${blog.id}`}
             className="text-blue-600 hover:text-blue-800 mt-4 inline-block font-semibold transition-colors cursor-pointer"
           >
             Read More →
-          </a>
+          </Link>
         </div>
       </div>
     </div>

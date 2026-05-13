@@ -6,10 +6,11 @@ import AlertMessage from "../shared/AlertMessage";
 import { useEffect, useState } from "react";
 import { LoginResponse, User } from "@/utils/types";
 import { useAuth } from "@/providers/auth-provider";
-import router from "next/dist/shared/lib/router/router";
+import { useRouter } from "next/dist/client/components/navigation";
 
 const LoginForm = () => {
   const { setUser } = useAuth();
+  const router = useRouter();
 
   const { formState, handleInputChange, handleBlur } = useLoginForm({
     userName: "",
@@ -72,13 +73,13 @@ const LoginForm = () => {
                     password: formState.password.value,
                   });
                   if (
-                    result.status === 200 &&
-                    result.data &&
-                    "id" in result.data
+                    result.status === 200 //&&
+                    //result.data &&
+                    //"id" in result.data
                   ) {
                     //successfully log user in. set loggedInState, userContext, redirect to /blogs
                     setUser(result.data);
-                    window.location.href = "/blogs";
+                    router.push("/blogs");
                   } else if (result.status === 401) {
                     setAlert((prev) => ({
                       ...prev,
@@ -168,7 +169,7 @@ const LoginForm = () => {
               <p className="text-center text-sm text-gray-500">
                 Don&apos;t have an account?{" "}
                 <a
-                  href="/auth/signup"
+                  href="/identity/signup"
                   className="text-teal-600 font-semibold hover:text-teal-700"
                 >
                   Sign up

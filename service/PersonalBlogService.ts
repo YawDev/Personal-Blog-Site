@@ -63,8 +63,11 @@ export const GetPostsById = async (id: string): Promise<Blog | null> => {
 };
 
 export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
-  var res = await httpClient
-    .post(`${getBffBaseUrl()}/api/auth/login`, body)
+  var res = await axios
+    .post(`${getBffBaseUrl()}/api/auth/login`, body, {
+      timeout: 5000,
+      withCredentials: true,
+    })
     .then((response) => {
       console.log("response", response);
       console.log("User authenticated: ", response.data);
@@ -77,7 +80,7 @@ export const LoginApi = async (body: LoginRequest): Promise<LoginResponse> => {
       } else {
         return {
           status: response.status,
-          data: {}, //normalizeUser(response.data),
+          data: response.data, //normalizeUser(response.data),
           message: "Login successful",
         };
       }

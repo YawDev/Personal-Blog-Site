@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import BackToArticles from "./BackToArticles";
 import EditPostLink from "./save/EditPostLink";
 import { getFromLocalStorage } from "@/utils/browser/LocalStorage";
+import Link from "next/dist/client/link";
 
 const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog | null }) => {
   const formatDate = (date: string | undefined) => {
@@ -180,21 +181,21 @@ const BlogDetails = ({ fetchedBlog }: { fetchedBlog: Blog | null }) => {
             <div className="flex justify-between">
               <div className="flex-1 pr-4">
                 <p className="text-sm text-gray-500 mb-1">Previous Article</p>
-                <a
+                <Link
                   href="#"
                   className="text-teal-600 hover:text-teal-800 font-medium"
                 >
                   ← Exploring Modern Web Development
-                </a>
+                </Link>
               </div>
               <div className="flex-1 pl-4 text-right">
                 <p className="text-sm text-gray-500 mb-1">Next Article</p>
-                <a
+                <Link
                   href="#"
                   className="text-teal-600 hover:text-teal-800 font-medium"
                 >
                   The Future of AI in Business →
-                </a>
+                </Link>
               </div>
             </div>
           </nav>
